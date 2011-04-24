@@ -4,23 +4,10 @@
 }
 
 body {
-  color: #333333;
-  background-color: #ffffff;
+  background-color: #f7f7f7;
   font-family: verdana, arial, helvetica, sans-serif;
   font-size: 12px;
-}
-
-a {
-  color: #000;
-}
-
-a:visited {
-  color: #666666;
-}
-
-a:hover {
-  color: #ffffff;
-  background-color:#000000;
+  font-weight: bold;
 }
 
 a.action_link,
@@ -55,15 +42,19 @@ div#alert, div#login_error {
 }
 
 div#alert, div#notice, div#login_error {
-  position: fixed;
-  bottom: .5em;
-  left: 5%;
-  right: 5%;
-  font-weight: bold;
-  font-size: 1.4em;
+  position: relative;
+  font-weight: normal;
+  font-size: 12px;
   text-align: center;
-  padding: .5em 1em;
-  border: 4px solid #c2bfb7;
+  padding: 10px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 0em;
+  width: 55%;
+  margin-bottom: 0px;
+  bottom: 40px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
 }
 
 div#alert div#close_alert,
@@ -124,11 +115,18 @@ div#loading_image {
 }
 
 div#login {
-  font-size: 1.2em;
-  width: 20em;
+  font-size: 12px;
+  width: 40em;
   margin: 5em auto;
   padding: 1em 2em;
-  border: 2px solid #333333;
+  background-color: #dfdfdf;
+  border: none 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0px 0px 6px #5c5c5c;
+  -moz-box-shadow: 0px 0px 6px #5c5c5c;
+  box-shadow: 0px 0px 6px #5c5c5c;
 }
 
 div#login div.field > label {
@@ -144,16 +142,28 @@ div#main_container {
   width: 95%;
   min-width: 750px;
   max-width: 1250px;
+  border: 1px solid #CCC;
+}
+
+div#main_container_login {
+  margin: 10em auto;
+  width: 95%;
+  min-width: 750px;
+  max-width: 1250px;
 }
 
 div#main_menu {
+  background: #cccccc;
+  background: -moz-linear-gradient(top, #cccccc 1%, #B9B9B9 77%, #999999 90%, #666666 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#cccccc), color-stop(77%,#B9B9B9), color-stop(90%,#999999), color-stop(100%,#666666));
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cccccc', endColorstr='#666666',GradientType=0 ); /* ie */
   position: absolute;
   width: 100%;
-  border-bottom: 2px solid #666666;
   top: 0px;
   left: 0px;
-  padding: .5em 0em;
+  padding: .0em 0em;
   min-width: 750px;
+  height: 41px;
 }
 
 div#notice {
@@ -196,13 +206,13 @@ div.actions input[type="submit"] {
 }
 
 div.actions, div.field {
-  margin-bottom: 1em;
+  margin-bottom: 0px;
 }
 
 div.add_nested_item {
   clear: both;
   font-weight: bold;
-  margin: .5em 0em;
+  margin: 1em 0em;
 }
 
 div.autocomplete_container {
@@ -241,7 +251,7 @@ div.autocomplete ul li span.informal {
 
 div.dynamic_details {
   clear: both;
-  padding: .5em 0em 0em 0em;
+  padding: .5em 0em;
 }
 
 div.field input[type="text"], div.field input[type="password"],
@@ -257,7 +267,7 @@ div.field textarea {
 
 div.field > label {
   display: block;
-  width: 30em;
+  width: 34em;
 }
 
 div.field input[type="checkbox"] + label {
@@ -266,15 +276,15 @@ div.field input[type="checkbox"] + label {
 }
 
 div.field.column_left {
-    float: left;
-    width: 48%;
-    margin-right: 1%;
+  float: left;
+  width: 48%;
+  margin-right: 1%;
 }
 
 div.field.column_right {
-    float: right;
-    width: 48%;
-    margin-left: 1%;
+  float: right;
+  width: 48%;
+  margin-left: 1%;
 }
 
 div.field.column_left input[type="text"],
@@ -285,7 +295,7 @@ div.field.column_right input[type="text"],
 div.field.column_right input[type="password"],
 div.field.column_right select,
 div.field.column_right textarea {
-    width: 94%;
+  width: 94%;
 }
 
 div.field.column_left > label, div.field.column_right > label {
@@ -315,6 +325,18 @@ form.button_to input[type="submit"] {
   padding: 0em .5em;
 }
 
+/* TODO: revisar */
+h1 {
+  color: #333;
+}
+
+/* TODO: revisar */
+h2 {
+  font-family: verdana, geneva, sans-serif;
+  font-size: 12px;
+  color: #cccccc;
+}
+
 h2.title {
   font-size: 1.5em;
   margin-bottom: 1em;
@@ -333,14 +355,14 @@ input.field_with_errors, select.field_with_errors, text_area.field_with_errors {
 }
 
 label.field_with_errors {
-  color: #ffffff;
+  color: #333333;
   font-weight: bold;
-  background-color: #cc0000;
-  border: 2px solid #cc0000;
+  background-color: #DFDFDF;
 }
 
 nav#menu_links {
-  margin-left: 1em;
+  margin-left: 10px;
+  margin-top: 8px;
 }
 
 nav#menu_links a {
@@ -348,25 +370,39 @@ nav#menu_links a {
 }
 
 nav#menu_links li.selected a {
-  color: #151215;
+  background-color:#333;
   font-weight: bold;
+  border:none 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  padding:5px;
+  color: #FFF;
+  text-decoration: none;
+}
+
+nav#menu_links li.active a {
+  padding:5px;
 }
 
 nav#menu_links ul, nav#menu_links li, nav#user_actions ul, nav#user_actions li {
   display: inline;
   list-style: none;
   margin: 0em .5em;
+  vertical-align: middle;
 }
 
 nav#user_actions {
   position: absolute;
-  right: 1em;
-  top: .5em;
+  right: 0px;
+  top: 0em;
+  width: 326px;
 }
 
 nav#user_actions div#username {
   display: inline;
   font-weight: bold;
+  color: #333;
 }
 
 nav.links {
@@ -433,14 +469,19 @@ section.details h3 {
 section.nested_items {
   display: block;
   clear: both;
-  padding-left: 1.5em;
-  border-left: 3px solid #999999;
 }
 
 section.nested_items div.headers {
   clear: both;
   padding: .5em 0em;
-  border-bottom: 2px dotted #333333;
+  background: #cccccc; /* old browsers */
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, rgb(247,247,247)), color-stop(1, rgb(205,205,205)));
+}
+
+section.nested_items h2 {
+  font-size: 1.2em;
+  margin: .5em 0em;
+  color: #CCC;
 }
 
 section.nested_items div.headers h3 {
@@ -515,25 +556,70 @@ table.list tbody tr.odd:hover, table.list tbody tr.even:hover {
 table.summary {
   width: 100%;
   border-collapse: collapse;
-  margin: 1em 0em;
 }
 
 table.summary td {
   padding: .4em .5em;
+  font-weight: normal;
 }
 
 table.summary th {
   text-align: left;
   padding: .4em .5em;
-  border-bottom: 1px dotted #333333;
+  color: #333;
+  background: #cccccc; /* old browsers */
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, rgb(247,247,247)), color-stop(1, rgb(205,205,205)));
+  background-image: -moz-linear-gradient(center bottom, rgb(247,247,247) 0%, rgb(205,205,205) 100%);
+}
+
+/* TODO: revisar */
+td {
+  color: #333;
 }
 
 ul.raw {
   margin: 1em 0em 1em 3em;
 }
 
+/* TODO: cambiar */
+.barra_vertical {
+  border-left: 1px solid #666;
+  vertical-align: middle;
+}
+
 .bold {
   font-weight: bold;
+}
+
+/* Referencia a todos los botones del main*/
+.button {
+  display: inline-block;
+  zoom: 1;
+  display: inline;
+  vertical-align: baseline;
+  margin: 0 2px;
+  outline: none;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  font: 12px;
+  padding: .5em 2em .55em;
+  -webkit-border-radius: .5em;
+  -moz-border-radius: 0.5em;
+  border-radius: .5em;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  font-family: arial, helvetica, sans-serif;
+}
+
+.button:hover {
+  text-decoration: none;
+}
+
+.button:active {
+  position: relative;
+  top: 1px;
 }
 
 .clear {
@@ -545,8 +631,57 @@ ul.raw {
   color: #00cc00;
 }
 
+.h22 {
+  font-family: verdana, geneva, sans-serif;
+  font-size: 12px;
+  color: #ffffff;
+}
+
+.menup {
+  color: #333;
+}
+
+.menup:visited {
+  color: #333;
+}
+
+.menup:hover {
+  background-color:#333;
+  font-weight: bold;
+  border:none 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  padding:5px;
+  color: #FFF;
+  text-decoration: none;
+}
+
 .red {
   color: #cc0000;
+}
+
+.white {
+  color: #606060;
+  border: solid 1px #b7b7b7;
+  background: #fff;
+  background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed));
+  background: -moz-linear-gradient(top,  #fff,  #ededed);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
+}
+
+.white:hover {
+  background: #ededed;
+  background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#dcdcdc));
+  background: -moz-linear-gradient(top,  #fff,  #dcdcdc);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dcdcdc');
+}
+
+.white:active {
+  color: #999;
+  background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#fff));
+  background: -moz-linear-gradient(top,  #ededed,  #fff);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#ffffff');
 }
 
 /* Estilo de los "Trabajos de impresión" dentro de "Impresiones" */
