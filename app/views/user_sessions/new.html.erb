@@ -1,20 +1,33 @@
+<% content_for :css_extra do %>
+body {
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #F7F7F7), color-stop(1, #DADADA));
+  background-image: -moz-linear-gradient(center bottom, #F7F7F7 0%, #DADADA 100%);
+  background-repeat: no-repeat;
+}
+<% end %>
+<% @main_container_id = 'main_container_login' %>
 <div id="login">
-  <%= form_for(@user_session) do |f| %>
-    <div class="field">
-      <%= f.label :username %>
-      <%= f.text_field :username, :autocomplete => :off, :autofocus => true %>
-    </div>
-    <div class="field">
-      <%= f.label :password %>
-      <%= f.password_field :password %>
-    </div>
-    <div class="field">
-      <%= f.check_box :remember_me %><%= f.label :remember_me %>
-    </div>
-    <div class="actions">
-      <%= f.submit t(:'view.user_sessions.login') %>
-    </div>
-  <% end %>
+  <div class="login_block"><%= image_tag 'imgpass.gif', :size => '195x170' %></div>
+  <div class="login_block"><%= image_tag 'linever.gif', :size => '5x200' %></div>
+  <div class="login_block">
+    <%= form_for(@user_session) do |f| %>
+      <div class="field">
+        <%= f.label :username %>
+        <%= f.text_field :username, :autocomplete => :off, :autofocus => true %>
+      </div>
+      <div class="field">
+        <%= f.label :password %>
+        <%= f.password_field :password %>
+      </div>
+      <div class="field">
+        <%= f.check_box :remember_me %><%= f.label :remember_me %>
+      </div>
+      <div class="actions">
+        <%= f.submit t(:'view.user_sessions.login') %>
+      </div>
+    <% end %>
+  </div>
+  <div class="clear"></div>
 </div>
 
 <% if @user_session.errors.any? %>

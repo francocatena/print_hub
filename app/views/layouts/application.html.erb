@@ -9,6 +9,9 @@
   <%= javascript_tag do %>
     <%= yield :js_extra %>
   <% end %>
+  <style type="text/css">
+    <!--<%= yield :css_extra %>-->
+  </style>
 </head>
 <body>
   <div id="loading_image" style="display: none;">
@@ -19,7 +22,7 @@
       <%= render :partial => 'shared/menu' %>
     </div>
   <% end %>
-  <div id="main_container">
+  <div id="<%= @main_container_id || 'main_container' %>">
     <%= yield %>
   </div>
   <%= render :partial => 'shared/notice' if flash.notice %>
