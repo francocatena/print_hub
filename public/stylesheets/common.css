@@ -25,6 +25,10 @@ a.action_link:hover {
   color: #ffffff;
 }
 
+a.button {
+  text-transform: uppercase;
+}
+
 a.remove:hover,
 a[data-event="remove_item"]:hover,
 a[data-event="hide_item"]:hover {
@@ -117,15 +121,14 @@ div#loading_image {
 div#main_container {
   margin: 4em auto;
   width: 95%;
-  min-width: 750px;
+  min-width: 960px;
   max-width: 1250px;
-  border: 1px solid #CCC;
 }
 
 div#main_container_login {
   margin: 10em auto;
   width: 95%;
-  min-width: 750px;
+  min-width: 960px;
   max-width: 1250px;
 }
 
@@ -139,7 +142,7 @@ div#main_menu {
   top: 0px;
   left: 0px;
   padding: .0em 0em;
-  min-width: 750px;
+  min-width: 960px;
   height: 41px;
 }
 
@@ -338,6 +341,7 @@ label.field_with_errors {
 }
 
 nav#menu_links {
+  float: left;
   margin-left: 10px;
   margin-top: 8px;
 }
@@ -352,6 +356,10 @@ nav#menu_links li.selected a {
   padding: 5px;
   color: #ffffff;
   text-decoration: none;
+}
+
+nav#menu_links ul {
+  height: 100%;
 }
 
 nav#menu_links ul, nav#menu_links li, nav#user_actions ul, nav#user_actions li {
@@ -484,20 +492,20 @@ section.nested_items {
 section.nested_items div.headers {
   clear: both;
   padding: .5em 0em;
-  background: #cccccc; /* old browsers */
+  background: #cccccc;
   background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, rgb(247,247,247)), color-stop(1, rgb(205,205,205)));
+  background-image: -moz-linear-gradient(center bottom, rgb(247,247,247) 0%, rgb(205,205,205) 100%);
 }
 
 section.nested_items h2 {
-  font-size: 1.2em;
-  margin: .5em 0em;
-  color: #CCC;
+  font-size: 1em;
+  color: #ffffff;
 }
 
 section.nested_items div.headers h3 {
   font-size: 1em;
   float: left;
-  margin-right: 1em;
+  margin: 0em .5em;
 }
 
 section.nested_items div.items {
@@ -512,12 +520,7 @@ section.nested_items div.nested_item {
 section.nested_items div.items div.nested_item_field,
 section.nested_items div.items div.nested_item_actions {
   float: left;
-  margin-right: 1em;
-}
-
-section.nested_items h2 {
-  font-size: 1.2em;
-  margin: 1em 0em .5em -.8em;
+  margin: 0em .5em;
 }
 
 section.nested_items input[type="text"],
@@ -525,6 +528,25 @@ section.nested_items input[type="password"],
 section.nested_items select,
 section.nested_items textarea {
   width: 98%;
+}
+
+section.nested_items table.header {
+  width: 100%;
+  margin-top: 1.5em;
+  border-collapse: collapse;
+}
+
+section.nested_items table.header td.title {
+  white-space: nowrap;
+  width: 1em;
+  padding: .7em .5em;
+  background: #333333;
+  color: #ffffff;
+}
+
+section.nested_items table.header td.place_holder {
+  width: 100%;
+  background: #dedede;
 }
 
 section.tags {
@@ -537,6 +559,27 @@ span.money {
   margin: 0em .5em;
   background: #f0f0f0;
   font-size: .8em;
+}
+
+table.field_container {
+  width: 100%;
+  border-collapse: collapse;
+  background: #dedede;
+}
+
+table.field_container input[type="text"], table.field_container select  {
+  width: 90%;
+}
+
+table.field_container td {
+  padding: .5em 0em;
+  text-align: left;
+}
+
+table.field_container td.label {
+  white-space: nowrap;
+  width: 1em;
+  padding: 0em 1em;
 }
 
 table.list {

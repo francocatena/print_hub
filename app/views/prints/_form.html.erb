@@ -9,44 +9,49 @@
   <% end %>
   <%= show_error_messages(@print) %>
 
-  <div class="field column_left">
-    <%= f.label :printer %>
-    <%= print_destinations_field(f) %>
-  </div>
-  <div class="field column_right">
-    <%= f.label :customer, :for => :print_auto_customer_name %>
-    <% field_classes = [:autocomplete_field] %>
-    <% field_classes << :field_with_errors unless @print.errors[:customer_id].blank? %>
-    <%= f.text_field :auto_customer_name, :value => @print.customer,
-      :class => field_classes.join(' '),
-      :'data-autocomplete-url' => autocomplete_for_customer_name_prints_path %>
-    <% if @print.customer %>
-      <%= link_to_function 'X',
-        "$('print_auto_customer_name').setValue(''); $('print_customer_id').setValue(''); this.remove()",
-        :class => :remove %>
-    <% end %>
-    <div class="autocomplete_container">
-      <div class="autocomplete" style="display: none;"></div>
-    </div>
-    <%= f.hidden_field :customer_id, :class => :autocomplete_id %>
-    <%= hidden_field_tag :customer_free_credit,
-      @print.customer.try(:free_credit), :id => :customer_free_credit %>
-  </div>
-
-  <div class="clear">
-    <div class="field column_left">
-      <%= f.label :scheduled_at %>
-      <%= f.calendar_date_select :scheduled_at, :time => true %>
-    </div>
-
-    <div class="field column_right">
-      <%= f.label :avoid_printing %>
-      <%= f.check_box :avoid_printing %>
-    </div>
-  </div>
+  <table class="field_container">
+    <tbody>
+      <tr>
+        <td class="label"><%= f.label :printer %></td>
+        <td><%= print_destinations_field(f) %></td>
+        <td class="label"><%= f.label :customer, :for => :print_auto_customer_name %></td>
+        <td>
+          <% field_classes = [:autocomplete_field] %>
+          <% field_classes << :field_with_errors unless @print.errors[:customer_id].blank? %>
+          <%= f.text_field :auto_customer_name, :value => @print.customer,
+            :class => field_classes.join(' '),
+            :'data-autocomplete-url' => autocomplete_for_customer_name_prints_path %>
+          <% if @print.customer %>
+            <%= link_to_function 'X',
+              "$('print_auto_customer_name').setValue(''); $('print_customer_id').setValue(''); this.remove()",
+              :class => :remove %>
+          <% end %>
+          <div class="autocomplete_container">
+            <div class="autocomplete" style="display: none;"></div>
+          </div>
+          <%= f.hidden_field :customer_id, :class => :autocomplete_id %>
+          <%= hidden_field_tag :customer_free_credit,
+            @print.customer.try(:free_credit), :id => :customer_free_credit %>
+        </td>
+      </tr>
+      <tr>
+        <td class="label"><%= f.label :scheduled_at %></td>
+        <td><%= f.calendar_date_select :scheduled_at, :time => true %></td>
+        <td class="label"><%= f.label :avoid_printing %></td>
+        <td><%= f.check_box :avoid_printing %></td>
+      </tr>
+    </tbody>
+  </table>
 
   <section class="nested_items">
-    <h2><%= t :print_jobs, :scope => [:view, :prints] %></h2>
+    <table class="header">
+      <tbody>
+        <tr>
+          <td class="title"><h2><%= t :print_jobs, :scope => [:view, :prints] %></h2></td>
+          <td class="place_holder">&nbsp;</td>
+        </tr>
+      </tbody>
+    </table>
     
     <div id="print_jobs_headers" class="headers">
       <h3><%= PrintJob.human_attribute_name :document_id %></h3>
@@ -71,11 +76,19 @@
     <%= link_to_if @print.new_record?, t(:'view.prints.add_print_job'), '#',
       :'data-template' => :print_job, :'data-container' => :print_jobs,
       :'data-event' => :add_nested_item, :id => :add_print_job_link,
-      :title => t(:'view.prints.add_print_job_title') %>
+      :title => t(:'view.prints.add_print_job_title'),
+      :class => 'button white' %>
   </div>
 
   <section class="nested_items">
-    <h2><%= t :article_lines, :scope => [:view, :prints] %></h2>
+    <table class="header">
+      <tbody>
+        <tr>
+          <td class="title"><h2><%= t :article_lines, :scope => [:view, :prints] %></h2></td>
+          <td class="place_holder">&nbsp;</td>
+        </tr>
+      </tbody>
+    </table>
 
     <div id="article_lines_headers" class="headers">
       <h3><%= ArticleLine.human_attribute_name :article_id %></h3>
@@ -98,11 +111,19 @@
     <%= link_to_if @print.new_record?, t(:'view.prints.add_article_line'), '#',
       :'data-template' => :article_line, :'data-container' => :article_lines,
       :'data-event' => :add_nested_item, :id => :add_article_line_link,
-      :title => t(:'view.prints.add_article_line_title') %>
+      :title => t(:'view.prints.add_article_line_title'),
+      :class => 'button white' %>
   </div>
 
   <section class="nested_items">
-    <h2><%= t :payment, :scope => [:view, :prints] %></h2>
+    <table class="header">
+      <tbody>
+        <tr>
+          <td class="title"><h2><%= t :payment, :scope => [:view, :prints] %></h2></td>
+          <td class="place_holder">&nbsp;</td>
+        </tr>
+      </tbody>
+    </table>
     <table class="summary">
       <thead>
         <tr>
@@ -137,7 +158,7 @@
 
   <div class="actions">
     <%= f.hidden_field :lock_version %>
-    <%= f.submit nil, :id => :print_submit,
+    <%= f.submit nil, :id => :print_submit, :class => 'button white',
       :title => t(:'view.prints.print_title') %>
   </div>
 <% end %>
