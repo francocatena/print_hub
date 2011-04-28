@@ -24,9 +24,10 @@
   </nav>
 <% end %>
 <nav id="user_actions">
-  <div id="username">| <%= current_user.username %> |</div>
-  <ul>
-    <li><%= link_to t(:logout, :scope => [:menu, :actions]),
-      user_sessions_path, :method => :delete %></li>
-  </ul>
+  <div id="username">
+    <%= image_tag 'logo.png', :size => '145x41' %> |
+    <%= current_user.username %> |
+    <%= link_to t(:logout, :scope => [:menu, :actions]),
+      user_sessions_path, :method => :delete, :class => 'button white' %>
+  </div>
 </nav>

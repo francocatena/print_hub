@@ -342,44 +342,77 @@ nav#menu_links {
   margin-top: 8px;
 }
 
-nav#menu_links a {
-  text-decoration: none;
-}
-
 nav#menu_links li.selected a {
-  background-color:#333;
+  background-color: #333333;
   font-weight: bold;
-  border:none 5px;
+  border: none 5px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  padding:5px;
-  color: #FFF;
+  padding: 5px;
+  color: #ffffff;
   text-decoration: none;
-}
-
-nav#menu_links li.active a {
-  padding:5px;
 }
 
 nav#menu_links ul, nav#menu_links li, nav#user_actions ul, nav#user_actions li {
   display: inline;
   list-style: none;
-  margin: 0em .5em;
   vertical-align: middle;
+}
+
+nav#menu_links ul li {
+  border-right: 1px solid #666666;
+  vertical-align: middle;
+  padding: 0em .5em;
+}
+
+nav#menu_links ul li a {
+  color: #333333;
+  padding: 5px;
+  text-decoration: none;
+}
+
+nav#menu_links ul li a:visited {
+  color: #333333;
+}
+
+nav#menu_links ul li a:hover {
+  background-color:#333333;
+  font-weight: bold;
+  border: none 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+nav#menu_links ul li.selected a {
+  background-color: #333333;
+  font-weight: bold;
+  border: none 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  padding: 5px;
+  color: #ffffff;
+  text-decoration: none;
 }
 
 nav#user_actions {
   position: absolute;
-  right: 0px;
+  right: 1em;
   top: 0em;
-  width: 326px;
 }
 
 nav#user_actions div#username {
   display: inline;
   font-weight: bold;
   color: #333;
+}
+
+nav#user_actions div#username img {
+  vertical-align: middle;
 }
 
 nav.links {
@@ -558,12 +591,6 @@ ul.raw {
   margin: 1em 0em 1em 3em;
 }
 
-/* TODO: cambiar */
-.barra_vertical {
-  border-left: 1px solid #666;
-  vertical-align: middle;
-}
-
 .bold {
   font-weight: bold;
 }
@@ -612,26 +639,6 @@ ul.raw {
   font-family: verdana, geneva, sans-serif;
   font-size: 12px;
   color: #ffffff;
-}
-
-.menup {
-  color: #333;
-}
-
-.menup:visited {
-  color: #333;
-}
-
-.menup:hover {
-  background-color:#333;
-  font-weight: bold;
-  border:none 5px;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  padding:5px;
-  color: #FFF;
-  text-decoration: none;
 }
 
 .red {
