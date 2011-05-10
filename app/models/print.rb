@@ -14,7 +14,7 @@ class Print < ActiveRecord::Base
   )
 
   # Atributos no persistentes
-  attr_accessor :auto_customer_name, :avoid_printing
+  attr_accessor :auto_customer_name, :avoid_printing, :include_documents
 
   # Restricciones en los atributos
   attr_readonly :user_id, :customer_id, :printer
@@ -61,6 +61,13 @@ class Print < ActiveRecord::Base
     super(attributes)
 
     self.user = UserSession.find.try(:user) || self.user rescue self.user
+    
+    unless self.include_documents.blank?
+      self.include_documents.each do |document_id|
+        self.print_jobs.build(:document_id => document_id)
+      end
+    end
+    
     self.print_jobs.build if self.print_jobs.empty?
 
     self.payment(:cash)
@@ -76,8 +83,12 @@ class Print < ActiveRecord::Base
       self.payments.build(:paid_with => Payment::PAID_WITH[type])
   end
 
+  def avoid_printing?
+    self.avoid_printing == true || self.avoid_printing == '1'
+  end
+
   def print_all_jobs
-    if self.printer_was.blank? && !self.printer.blank? && !self.avoid_printing
+    if self.printer_was.blank? && !self.printer.blank? && !self.avoid_printing?
       self.print_jobs.reject(&:marked_for_destruction?).each do |pj|
         pj.send_to_print(self.printer, self.user)
       end
