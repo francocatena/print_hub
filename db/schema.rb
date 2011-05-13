@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110511141815) do
+ActiveRecord::Schema.define(:version => 20110512230710) do
 
   create_table "article_lines", :force => true do |t|
     t.integer  "print_id",                                                   :null => false
@@ -35,13 +35,16 @@ ActiveRecord::Schema.define(:version => 20110511141815) do
     t.integer  "code",                                                       :null => false
   end
 
+  add_index "articles", ["code"], :name => "index_articles_on_code"
+
   create_table "bonuses", :force => true do |t|
-    t.decimal  "amount",      :precision => 15, :scale => 3, :null => false
-    t.decimal  "remaining",   :precision => 15, :scale => 3, :null => false
+    t.decimal  "amount",       :precision => 15, :scale => 3,                :null => false
+    t.decimal  "remaining",    :precision => 15, :scale => 3,                :null => false
     t.date     "valid_until"
     t.integer  "customer_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "lock_version",                                :default => 0
   end
 
   add_index "bonuses", ["customer_id"], :name => "index_bonuses_on_customer_id"
@@ -191,6 +194,7 @@ ActiveRecord::Schema.define(:version => 20110511141815) do
     t.integer  "lock_version",      :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "default_printer"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
