@@ -77,6 +77,20 @@ class PrintsControllerTest < ActionController::TestCase
     assert_select '#error_body', false
     assert_template 'prints/index'
   end
+  
+  test 'should get customer index' do
+    user = users(:administrator)
+    customer = customers(:student)
+
+    UserSession.create(user)
+    get :index, :customer_id => customer.to_param
+    assert_response :success
+    assert_not_nil assigns(:prints)
+    assert_equal customer.prints.count, assigns(:prints).size
+    assert assigns(:prints).all? { |p| p.customer_id == customer.id }
+    assert_select '#error_body', false
+    assert_template 'prints/index'
+  end
 
   test 'should get new' do
     UserSession.create(users(:operator))
@@ -491,11 +505,11 @@ class PrintsControllerTest < ActionController::TestCase
 
   test 'should get autocomplete customer list' do
     UserSession.create(users(:operator))
-    get :autocomplete_for_customer_name, :q => 'wa'
+    get :autocomplete_for_customer_name, :q => 'anakin'
     assert_response :success
-    assert_select 'li[data-id]', 2
+    assert_select 'li[data-id]', 1
 
-    get :autocomplete_for_customer_name, :q => 'kin'
+    get :autocomplete_for_customer_name, :q => 'obi'
     assert_response :success
     assert_select 'li[data-id]', 1
 

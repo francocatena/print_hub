@@ -19,6 +19,8 @@ gem 'whenever', :require => false
 # Previo sudo apt-get install libcupsys2-dev
 gem 'cups'
 gem 'pdf-reader'
+# TODO: eliminar cuando corrijan el problema en Rails
+gem 'rake', '0.8.7'
 
 group :production do
   gem 'smurf'

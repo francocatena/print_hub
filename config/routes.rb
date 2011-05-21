@@ -1,9 +1,14 @@
 PrintHubApp::Application.routes.draw do
+  resources :bonuses, :only => [:index]
+
   resources :articles
 
   resources :payments, :only => [:index]
 
-  resources :customers
+  resources :customers do
+    resources :prints, :only => [:index]
+    resources :bonuses, :only => [:index]
+  end
 
   resources :settings, :only => [:index, :show, :edit, :update]
 

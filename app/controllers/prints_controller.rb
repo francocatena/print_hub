@@ -1,14 +1,7 @@
 class PrintsController < ApplicationController
-  before_filter :require_user
+  before_filter :require_user, :load_customer
 
   layout proc { |controller| controller.request.xhr? ? false : 'application' }
-
-  autocomplete_for(:customer, :name,
-    :match => ['name', 'lastname', 'identification'], :limit => 10,
-    :order => ['lastname ASC', 'name ASC']) do |customers|
-      render_to_string :partial => 'autocomplete_for_customer_name',
-        :locals => { :customers => customers }
-    end
 
   # GET /prints
   # GET /prints.xml
@@ -184,6 +177,42 @@ class PrintsController < ApplicationController
 
     @articles = @articles.limit(10)
   end
+  
+  # GET /prints/autocomplete_for_customer_name
+  def autocomplete_for_customer_name
+    query = params[:q].strip.gsub(/\s*([&|])\s*/, '\1').gsub(/[|&!]$/, '')
+    @query_terms = query.split(/\s+/).reject(&:blank?)
+    @customers = Customer.scoped
+
+    unless @query_terms.empty?
+      parameters = {
+        :and_term => @query_terms.join(' & '),
+        :wilcard_term => "%#{@query_terms.join('%')}%"
+      }
+
+      if DB_ADAPTER == 'PostgreSQL'
+        lang = "'spanish'" # TODO: implementar con I18n
+        query = "to_tsvector(#{lang}, coalesce(identification,'') || ' ' || coalesce(name,'') || ' ' || coalesce(lastname,'')) @@ to_tsquery(#{lang}, :and_term)"
+        order = "ts_rank_cd(#{query.sub(' @@', ',')})"
+
+        order = Customer.send(:sanitize_sql_for_conditions, [order, parameters])
+      else
+        query = [
+          "LOWER(name) LIKE LOWER(:wilcard_term)",
+          "LOWER(lastname) LIKE LOWER(:wilcard_term)",
+          "LOWER(identification) LIKE LOWER(:wilcard_term)"
+        ].join(' OR ')
+        order = 'name ASC'
+      end
+      conditions = [query]
+
+      @customers = @customers.where(
+        conditions.map { |c| "(#{c})" }.join(' OR '), parameters
+      ).order(order)
+    end
+
+    @customers = @customers.limit(10)
+  end
 
   # PUT /prints/cancel_job
   def cancel_job
@@ -192,9 +221,17 @@ class PrintsController < ApplicationController
   end
 
   private
+  
+  def load_customer
+    @customer = Customer.find(params[:customer_id]) if params[:customer_id]
+  end
 
   def prints_scope
-    scope = current_user.admin ? Print.scoped : current_user.prints
+    if @customer
+      scope = @customer.prints
+    else
+      scope = current_user.admin ? Print.scoped : current_user.prints
+    end
 
     case params[:status]
       when 'pending'

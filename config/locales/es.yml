@@ -28,6 +28,8 @@
       models:
         print:
           attributes:
+            base:
+              must_have_one_item: 'La impresión debe tener al menos un trabajo o un artículo'
             printer:
               must_be_blank: 'no debe estar seleccionada'
             payments:
@@ -459,6 +461,9 @@
       correctly_created: 'Artículo agregado correctamente.'
       correctly_updated: 'Artículo actualizado correctamente.'
       stale_object_error: 'El artículo no pudo ser actualizado, intente nuevamente.'
+    bonuses:
+      index_title: 'Listado de bonificaciones'
+      bonuses_with_customer: 'Bonificaciones de %{customer}'
     customers:
       index_title: 'Listado de clientes'
       show_title: 'Detalle de cliente'
@@ -472,6 +477,14 @@
       current_bonuses:
         one: 'Bonificación vigente'
         other: 'Bonificaciones vigentes'
+      without_bonuses: 'Sin bonificaciones'
+      bonus_list:
+        one: 'Una bonificación'
+        other: '%{count} bonificaciones'
+      without_prints: 'Sin impresiones'
+      print_list:
+        one: 'Una impresión'
+        other: '%{count} impresiones'
     documents:
       index_title: 'Listado de documentos'
       show_title: 'Detalle de documento'
@@ -534,6 +547,7 @@
       disabled_cancel_job: 'Cancelando ...'
       job_canceled: 'Cancelado'
       job_not_canceled: 'No se pudo cancelar'
+      prints_with_customer: 'Impresiones de %{customer}'
     settings:
       index_title: 'Listado de configuraciones'
       show_title: 'Detalle de configuración'
