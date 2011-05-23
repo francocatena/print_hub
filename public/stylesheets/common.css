@@ -121,6 +121,7 @@ div#loading_image {
 div#main_container {
   margin: 4em auto;
   width: 95%;
+<<<<<<< HEAD
   min-width: 960px;
   max-width: 1250px;
 }
@@ -128,7 +129,7 @@ div#main_container {
 div#main_container_login {
   margin: 10em auto;
   width: 95%;
-  min-width: 960px;
+  min-width: 1000px;
   max-width: 1250px;
 }
 
@@ -142,7 +143,7 @@ div#main_menu {
   top: 0px;
   left: 0px;
   padding: .0em 0em;
-  min-width: 960px;
+  min-width: 1000px;
   height: 41px;
 }
 

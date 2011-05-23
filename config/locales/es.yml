@@ -327,6 +327,7 @@
     actions:
       logout: 'Salir'
     articles: 'Artículos'
+    bonuses: 'Bonificaciones'
     customers: 'Clientes'
     documents: 'Documentos'
     payments: 'Pagos'
@@ -548,6 +549,8 @@
       job_canceled: 'Cancelado'
       job_not_canceled: 'No se pudo cancelar'
       prints_with_customer: 'Impresiones de %{customer}'
+      new: 'Nueva'
+      new_without_stored_documents: 'Nueva impresión *sin* documentos'
     settings:
       index_title: 'Listado de configuraciones'
       show_title: 'Detalle de configuración'
