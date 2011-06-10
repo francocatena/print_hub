@@ -14,24 +14,21 @@ class Print < ActiveRecord::Base
   )
 
   # Atributos no persistentes
-  attr_accessor :auto_customer_name, :avoid_printing, :include_documents
+  attr_accessor :auto_customer_name, :avoid_printing, :include_documents,
+    :credit_password
 
   # Restricciones en los atributos
   attr_readonly :user_id, :customer_id, :printer
   attr_protected :pending_payment
 
   # Restricciones
-  validates :printer, :presence => true,
-    :if => lambda { |p| p.scheduled_at.blank? }
+  validates :printer, :presence => true, :if => lambda { |p|
+    p.scheduled_at.blank? && !p.print_jobs.reject(&:marked_for_destruction?).empty?
+  }
   validates :printer, :length => { :maximum => 255 }, :allow_nil => true,
     :allow_blank => true
   validates_datetime :scheduled_at, :allow_nil => true, :allow_blank => true,
     :after => lambda { Time.now }
-  validates_each :print_jobs do |record, attr, value|
-    if value.reject { |pj| pj.marked_for_destruction? }.empty?
-      record.errors.add attr, :blank
-    end
-  end
   validates_each :printer do |record, attr, value|
     printer_changed = !record.printer_was.blank? && record.printer_was != value
     print_and_schedule_new_record = record.new_record? &&
@@ -41,17 +38,18 @@ class Print < ActiveRecord::Base
       record.errors.add attr, :must_be_blank
     end
   end
-  validate :must_have_valid_payments
+  validate :must_have_one_item, :must_have_valid_payments
 
   # Relaciones
   belongs_to :user
-  belongs_to :customer
+  belongs_to :customer, :autosave => true
   has_many :payments, :as => :payable
   has_many :print_jobs
   has_many :article_lines
   autocomplete_for :customer, :name, :name => :auto_customer
 
-  accepts_nested_attributes_for :print_jobs, :allow_destroy => false
+  accepts_nested_attributes_for :print_jobs, :allow_destroy => false,
+    :reject_if => :reject_print_job_attributes?
   accepts_nested_attributes_for :article_lines, :allow_destroy => false,
     :reject_if => proc { |attributes| attributes['article_id'].blank? }
   accepts_nested_attributes_for :payments, :allow_destroy => false,
@@ -67,8 +65,6 @@ class Print < ActiveRecord::Base
         self.print_jobs.build(:document_id => document_id)
       end
     end
-    
-    self.print_jobs.build if self.print_jobs.empty?
 
     self.payment(:cash)
     self.payment(:bonus)
@@ -105,6 +101,22 @@ class Print < ActiveRecord::Base
     self.print_jobs.reject(&:marked_for_destruction?).to_a.sum(&:price) +
       self.article_lines.reject(&:marked_for_destruction?).to_a.sum(&:price)
   end
+  
+  def reject_print_job_attributes?(attributes)
+    has_document = !attributes['document_id'].blank? ||
+      !attributes['document'].blank?
+    
+    !has_document && attributes['pages'].blank?
+  end
+  
+  def must_have_one_item
+    print_jobs = self.print_jobs.reject(&:marked_for_destruction?)
+    article_lines = self.article_lines.reject(&:marked_for_destruction?)
+    
+    if print_jobs.empty? && article_lines.empty?
+      self.errors.add :base, :must_have_one_item
+    end
+  end
 
   def must_have_valid_payments
     unless (payment = self.payments.to_a.sum(&:amount)) == self.price
@@ -126,11 +138,16 @@ class Print < ActiveRecord::Base
 
   def update_customer_credit
     if (bonus = self.payments.detect(&:bonus?)) && bonus.amount > 0
-      remaining = self.customer.use_credit(bonus.amount)
+      remaining = self.customer.use_credit(bonus.amount, self.credit_password)
 
-      if remaining > 0 &&
-          remaining != (self.payments.detect(&:cash?).try(:amount) || 0)
-        raise 'Invalid payment'
+      if remaining == false
+        self.errors.add :credit_password, :invalid
+        
+        false
+      elsif remaining > 0
+        expected_remaining = self.payments.detect(&:cash?).try(:amount) || 0
+        
+        raise 'Invalid payment' if remaining != expected_remaining
       end
     end
   end

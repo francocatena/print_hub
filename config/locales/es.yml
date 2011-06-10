@@ -28,6 +28,10 @@
       models:
         print:
           attributes:
+            base:
+              must_have_one_item: 'La impresión debe tener al menos un trabajo o un artículo'
+            credit_password:
+              invalid: 'no es correcta'
             printer:
               must_be_blank: 'no debe estar seleccionada'
             payments:
@@ -84,6 +88,7 @@
         lastname: 'Apellido'
         identification: 'Identificación (DNI, CUIT, Legajo, etc.)'
         free_monthly_bonus: 'Bonificación mensual'
+        bonuses_password: 'Contraseña para bonificaciones'
         bonuses:
           one: 'Bonificación'
           other: 'Bonificaciones'
@@ -105,6 +110,7 @@
         printer: 'Impresora'
         scheduled_at: 'Programado para'
         avoid_printing: 'No imprimir'
+        credit_password: 'Contraseña'
         customer: 'Cliente'
         customer_id: 'Cliente'
         user: 'Usuario'
@@ -125,14 +131,14 @@
           one: 'Trabajo de impresión'
           other: 'Trabajos de impresión'
           copies: 'Copias'
-          pages: 'Hojas'
+          pages: 'Páginas'
           price_per_copy: 'Precio por hoja'
           range: 'Rango'
           two_sided: 'Doble faz'
           document_id: 'Documento'
       print_job:
         copies: 'Copias'
-        pages: 'Hojas'
+        pages: 'Páginas'
         price_per_copy: 'Precio por hoja'
         range: 'Rango'
         two_sided: 'Doble faz'
@@ -188,7 +194,7 @@
       # Use the strftime parameters for formats.
       # When no format has been given, it uses default.
       # You can provide other formats here if you like!
-      default: '%e/%m/%Y'
+      default: '%d/%m/%Y'
       short: '%e de %b'
       long: '%e de %B de %Y'
 
@@ -324,9 +330,12 @@
   menu:
     actions:
       logout: 'Salir'
+    admin: 'Administración »'
     articles: 'Artículos'
+    bonuses: 'Bonificaciones'
     customers: 'Clientes'
     documents: 'Documentos'
+    more: 'Más »'
     payments: 'Pagos'
     prints: 'Impresiones'
     settings: 'Configuración'
@@ -459,6 +468,9 @@
       correctly_created: 'Artículo agregado correctamente.'
       correctly_updated: 'Artículo actualizado correctamente.'
       stale_object_error: 'El artículo no pudo ser actualizado, intente nuevamente.'
+    bonuses:
+      index_title: 'Listado de bonificaciones'
+      bonuses_with_customer: 'Bonificaciones de %{customer}'
     customers:
       index_title: 'Listado de clientes'
       show_title: 'Detalle de cliente'
@@ -472,6 +484,14 @@
       current_bonuses:
         one: 'Bonificación vigente'
         other: 'Bonificaciones vigentes'
+      without_bonuses: 'Sin bonificaciones'
+      bonus_list:
+        one: 'Una bonificación'
+        other: '%{count} bonificaciones'
+      without_prints: 'Sin impresiones'
+      print_list:
+        one: 'Una impresión'
+        other: '%{count} impresiones'
     documents:
       index_title: 'Listado de documentos'
       show_title: 'Detalle de documento'
@@ -534,6 +554,12 @@
       disabled_cancel_job: 'Cancelando ...'
       job_canceled: 'Cancelado'
       job_not_canceled: 'No se pudo cancelar'
+      prints_with_customer: 'Impresiones de %{customer}'
+      customer_credit_detail:
+        link: 'Ver bonificaciones'
+        title: 'Ver detalle de bonificaciones vigentes'
+      new: 'Nueva'
+      new_without_stored_documents: 'Nueva impresión *sin* documentos'
     settings:
       index_title: 'Listado de configuraciones'
       show_title: 'Detalle de configuración'

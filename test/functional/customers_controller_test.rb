@@ -32,6 +32,7 @@ class CustomersControllerTest < ActionController::TestCase
           :lastname => 'Binks',
           :identification => '111',
           :free_monthly_bonus => 0.0,
+          :bonuses_password => '123',
           :bonuses_attributes => {
             :new_1 => {
               :amount => '100',
@@ -80,6 +81,7 @@ class CustomersControllerTest < ActionController::TestCase
           :lastname => 'Updated lastname',
           :identification => '111x',
           :free_monthly_bonus => 0.0,
+          :bonuses_password => '123',
           :bonuses_attributes => {
             :new_1 => {
               :amount => '100.0',
@@ -101,5 +103,14 @@ class CustomersControllerTest < ActionController::TestCase
     end
 
     assert_redirected_to customers_path
+  end
+  
+  test 'should get credit detail' do
+    UserSession.create(users(:administrator))
+    xhr :get, :credit_detail, :id => @customer.to_param
+    assert_response :success
+    assert_not_nil assigns(:customer)
+    assert_select '#error_body', false
+    assert_template 'customers/credit_detail'
   end
 end

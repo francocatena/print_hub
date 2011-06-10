@@ -71,6 +71,42 @@ class PrintTest < ActiveSupport::TestCase
     assert_equal '36.79', payment.paid.to_s
     assert_equal false, @print.pending_payment
   end
+  
+  # Prueba la creación de una impresión
+  test 'create with one article only' do
+    counts = ['Print.count', 'Payment.count', 'ArticleLine.count']
+    
+    assert_difference counts do
+      @print = Print.create(
+        :printer => @printer,
+        :user => users(:administrator),
+        :scheduled_at => '',
+        :article_lines_attributes => {
+          :new_1 => {
+            :article_id => articles(:binding).id,
+            :units => 1,
+            # No importa el precio, se establece desde el artículo
+            :unit_price => 12.0
+          }
+        },
+        :payments_attributes => {
+          :new_1 => {
+            :amount => 1.79,
+            :paid => 1.79
+          }
+        }
+      )
+    end
+
+    assert_equal 1, @print.reload.payments.size
+
+    payment = @print.payments.first
+
+    assert payment.cash?
+    assert_equal '1.79', payment.amount.to_s
+    assert_equal '1.79', payment.paid.to_s
+    assert_equal false, @print.pending_payment
+  end
 
   # Prueba la creación de una impresión programada
   test 'create scheduled' do
@@ -161,6 +197,7 @@ class PrintTest < ActiveSupport::TestCase
         :user => users(:administrator),
         :customer => customers(:student),
         :scheduled_at => '',
+        :credit_password => 'student',
         :print_jobs_attributes => {
           :new_1 => {
             :copies => 1,
@@ -197,6 +234,39 @@ class PrintTest < ActiveSupport::TestCase
     assert_equal '463.21',
       Customer.find(customers(:student).id).free_credit.to_s
   end
+  
+  test 'create with free credit and wrong password' do
+    counts = ['Print.count', 'PrintJob.count', 'Payment.count',
+      'Cups.all_jobs(@printer).keys.sort.last', 'ArticleLine.count']
+
+    assert_no_difference counts do
+      @print = Print.create(
+        :printer => @printer,
+        :user => users(:administrator),
+        :customer => customers(:student),
+        :scheduled_at => '',
+        :credit_password => 'wrong_password',
+        :print_jobs_attributes => {
+          :new_1 => {
+            :copies => 1,
+            :price_per_copy => 0.10,
+            :two_sided => false,
+            :document => documents(:math_book)
+          } # 350 páginas = $35.00
+        },
+        :payments_attributes => {
+          :new_1 => {
+            :amount => 35.00,
+            :paid => 35.00,
+            :paid_with => Payment::PAID_WITH[:bonus]
+          }
+        }
+      )
+    end
+    
+    assert_equal [error_message_from_model(@print, :credit_password, :invalid)],
+      @print.errors[:credit_password]
+  end
 
   test 'create with free credit and cash' do
     cups_count = 'Cups.all_jobs(@printer).keys.sort.last'
@@ -209,6 +279,7 @@ class PrintTest < ActiveSupport::TestCase
             :user => users(:administrator),
             :customer => customers(:student),
             :scheduled_at => '',
+            :credit_password => 'student',
             :print_jobs_attributes => {
               :new_1 => {
                 :copies => 100,
@@ -320,12 +391,11 @@ class PrintTest < ActiveSupport::TestCase
     @print.article_lines.destroy_all
     @print.payments.destroy_all
     assert @print.invalid?
-    assert_equal 3, @print.errors.count
-    assert_equal [error_message_from_model(@print, :printer, :blank),
-      error_message_from_model(@print, :printer, :must_be_blank)].sort,
-      @print.errors[:printer].sort
-    assert_equal [error_message_from_model(@print, :print_jobs, :blank)],
-      @print.errors[:print_jobs]
+    assert_equal 2, @print.errors.count
+    assert_equal [error_message_from_model(@print, :printer, :must_be_blank)],
+      @print.errors[:printer]
+    assert_equal [error_message_from_model(@print, :base, :must_have_one_item)],
+      @print.errors[:base]
   end
 
   # Prueba que las validaciones del modelo se cumplan como es esperado

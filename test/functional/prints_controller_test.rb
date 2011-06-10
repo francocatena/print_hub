@@ -77,12 +77,51 @@ class PrintsControllerTest < ActionController::TestCase
     assert_select '#error_body', false
     assert_template 'prints/index'
   end
+  
+  test 'should get customer index' do
+    user = users(:administrator)
+    customer = customers(:student)
+
+    UserSession.create(user)
+    get :index, :customer_id => customer.to_param
+    assert_response :success
+    assert_not_nil assigns(:prints)
+    assert_equal customer.prints.count, assigns(:prints).size
+    assert assigns(:prints).all? { |p| p.customer_id == customer.id }
+    assert_select '#error_body', false
+    assert_template 'prints/index'
+  end
 
   test 'should get new' do
     UserSession.create(users(:operator))
     get :new
     assert_response :success
     assert_not_nil assigns(:print)
+    assert_select '#error_body', false
+    assert_template 'prints/new'
+  end
+  
+  test 'should get new with stored documents' do
+    UserSession.create(users(:administrator))
+    session[:documents_for_printing] =
+      [documents(:math_notes).id, documents(:math_book).id]
+    
+    get :new
+    assert_response :success
+    assert_not_nil assigns(:print)
+    assert_select '.print_job', 2
+    assert_select '#error_body', false
+    assert_template 'prints/new'
+  end
+  
+  test 'should get new without stored documents' do
+    UserSession.create(users(:administrator))
+    session[:documents_for_printing] = [documents(:math_notes).id]
+    
+    get :new, :clear_documents_for_printing => true
+    assert_response :success
+    assert_not_nil assigns(:print)
+    assert session[:documents_for_printing].blank?
     assert_select '#error_body', false
     assert_template 'prints/new'
   end
@@ -174,6 +213,52 @@ class PrintsControllerTest < ActionController::TestCase
             }
           }
         end
+      end
+    end
+
+    assert_redirected_to print_path(assigns(:print))
+    # Debe asignar el usuario autenticado como el creador de la impresión
+    assert_equal users(:operator).id, assigns(:print).user.id
+    # Prueba básica para "asegurar" el funcionamiento del versionado
+    assert_equal users(:operator).id, Version.last.whodunnit
+  end
+  
+  test 'should create print with free credit' do
+    UserSession.create(users(:operator))
+
+    document = Document.find(documents(:math_book).id)
+    counts_array = ['Print.count', 'PrintJob.count', 'Payment.count',
+      'customer.prints.count', 'Cups.all_jobs(@printer).keys.sort.last']
+    customer = Customer.find customers(:student).id
+
+    assert_difference counts_array do
+      assert_difference 'Version.count', 4 do
+        post :create, :print => {
+          :printer => @printer,
+          :customer_id => customer.id,
+          :scheduled_at => '',
+          :avoid_printing => '0',
+          :credit_password => 'student',
+          :print_jobs_attributes => {
+            :new_1 => {
+              :copies => '1',
+              :pages => document.pages.to_s,
+              # No importa el precio, se establece desde la configuración
+              :price_per_copy => '12.0',
+              :range => '',
+              :two_sided => '0',
+              :auto_document_name => 'Some name given in autocomplete',
+              :document_id => document.id.to_s
+            }
+          },
+          :payments_attributes => {
+            :new_1 => {
+              :amount => '35.00',
+              :paid => '35.00',
+              :paid_with => Payment::PAID_WITH[:bonus].to_s
+            }
+          }
+        }
       end
     end
 
@@ -449,58 +534,103 @@ class PrintsControllerTest < ActionController::TestCase
     end
 
     UserSession.create(users(:operator))
-    get :autocomplete_for_document_name, :q => 'Math'
+    get :autocomplete_for_document_name, :format => :json, :q => 'Math'
     assert_response :success
-    assert_select 'li[data-id]', 2
+    
+    documents = ActiveSupport::JSON.decode(@response.body)
+    
+    assert_equal 2, documents.size
+    assert documents.all? { |d| (d['label'] + d['informal']).match /math/i }
 
-    get :autocomplete_for_document_name, :q => 'note'
+    get :autocomplete_for_document_name, :format => :json, :q => 'note'
     assert_response :success
-    assert_select 'li[data-id]', 2
+    
+    documents = ActiveSupport::JSON.decode(@response.body)
+    
+    assert_equal 2, documents.size
+    assert documents.all? { |d| (d['label'] + d['informal']).match /note/i }
 
-    get :autocomplete_for_document_name, :q => '001'
+    get :autocomplete_for_document_name, :format => :json, :q => '001'
     assert_response :success
-    assert_select 'li[data-id]', 1
+    
+    documents = ActiveSupport::JSON.decode(@response.body)
+    
+    assert_equal 1, documents.size
+    assert documents.all? { |d| (d['label'] + d['informal']).match /1/i }
 
-    get :autocomplete_for_document_name, :q => 'physics'
+    get :autocomplete_for_document_name, :format => :json, :q => 'physics'
     assert_response :success
-    assert_select 'li[data-id]', 1
+    
+    documents = ActiveSupport::JSON.decode(@response.body)
+    
+    assert_equal 1, documents.size
+    assert documents.all? { |d| (d['label'] + d['informal']).match /physics/i }
 
-    get :autocomplete_for_document_name, :q => 'phyxyz'
+    get :autocomplete_for_document_name, :format => :json, :q => 'phyxyz'
     assert_response :success
-    assert_select 'li[data-id]', false
+    
+    documents = ActiveSupport::JSON.decode(@response.body)
+    
+    assert documents.empty?
   end
 
   test 'should get autocomplete article list' do
     UserSession.create(users(:operator))
-    get :autocomplete_for_article_name, :q => '111'
+    get :autocomplete_for_article_name, :format => :json, :q => '111'
     assert_response :success
-    assert_select 'li[data-id]', 1
+    
+    articles = ActiveSupport::JSON.decode(@response.body)
+    
+    assert_equal 1, articles.size
+    assert articles.all? { |a| a['label'].match /111/i }
 
-    get :autocomplete_for_article_name, :q => 'binding'
+    get :autocomplete_for_article_name, :format => :json, :q => 'binding'
     assert_response :success
-    assert_select 'li[data-id]', 2
+    
+    articles = ActiveSupport::JSON.decode(@response.body)
+    
+    assert_equal 2, articles.size
+    assert articles.all? { |a| a['label'].match /binding/i }
 
-    get :autocomplete_for_article_name, :q => '333'
+    get :autocomplete_for_article_name, :format => :json, :q => '333'
     assert_response :success
-    assert_select 'li[data-id]', 1
+    
+    articles = ActiveSupport::JSON.decode(@response.body)
+    
+    assert_equal 1, articles.size
+    assert articles.all? { |a| a['label'].match /333/i }
 
-    get :autocomplete_for_article_name, :q => 'xyz'
+    get :autocomplete_for_article_name, :format => :json, :q => 'xyz'
     assert_response :success
-    assert_select 'li[data-id]', false
+    
+    articles = ActiveSupport::JSON.decode(@response.body)
+    
+    assert articles.empty?
   end
 
   test 'should get autocomplete customer list' do
     UserSession.create(users(:operator))
-    get :autocomplete_for_customer_name, :q => 'wa'
+    get :autocomplete_for_customer_name, :format => :json, :q => 'anakin'
     assert_response :success
-    assert_select 'li[data-id]', 2
+    
+    customers = ActiveSupport::JSON.decode(@response.body)
+    
+    assert_equal 1, customers.size
+    assert customers.all? { |c| (c['label'] + c['informal']).match /anakin/i }
 
-    get :autocomplete_for_customer_name, :q => 'kin'
+    get :autocomplete_for_customer_name, :format => :json, :q => 'obi'
     assert_response :success
-    assert_select 'li[data-id]', 1
+    
+    customers = ActiveSupport::JSON.decode(@response.body)
+    
+    assert_equal 1, customers.size
+    assert customers.all? { |c| (c['label'] + c['informal']).match /obi/i }
 
-    get :autocomplete_for_customer_name, :q => 'phyxyz'
+    get :autocomplete_for_customer_name, :format => :json, :q => 'phyxyz'
     assert_response :success
-    assert_select 'li[data-id]', false
+    
+    customers = ActiveSupport::JSON.decode(@response.body)
+    
+    assert customers.empty?
   end
 end

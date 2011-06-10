@@ -12,8 +12,8 @@ body {
 
 a.action_link,
 a.remove,
-a[data-event="remove_item"],
-a[data-event="hide_item"] {
+a[data-event="removeItem"],
+a[data-event="hideItem"] {
   font-size: 12px;
   font-weight: bold;
   padding: 1px 3px;
@@ -30,8 +30,8 @@ a.button {
 }
 
 a.remove:hover,
-a[data-event="remove_item"]:hover,
-a[data-event="hide_item"]:hover {
+a[data-event="removeItem"]:hover,
+a[data-event="hideItem"]:hover {
   background: #aa0000;
   color: #ffffff;
 }
@@ -195,38 +195,15 @@ div.add_nested_item {
   margin: 1em 0em;
 }
 
-div.autocomplete_container {
-  position: relative;
-}
-
-div.autocomplete {
-  position: absolute;
-  top: 0px !important;
-  left: 0px !important;
-  background-color: white;
-  border: 1px solid #888888;
-}
-
-div.autocomplete ul {
-  list-style-type: none;
-}
-
-div.autocomplete ul li.selected {
-  background-color: #ffffbb;
-}
-
-div.autocomplete ul li {
-  list-style-type: none;
+.ui-autocomplete span.informal {
   display: block;
-  padding: .1em;
-  min-height: 2.5em;
-  cursor: pointer;
-}
-
-div.autocomplete ul li span.informal {
-  display: block;
-  font-size: .8em;
+  white-space: normal;
+  font-size: .75em;
   color: #676767;
+}
+
+.ui-autocomplete span.label {
+  white-space: normal;
 }
 
 div.dynamic_details {
@@ -362,8 +339,21 @@ nav#menu_links ul {
   height: 100%;
 }
 
-nav#menu_links ul, nav#menu_links li, nav#user_actions ul, nav#user_actions li {
-  display: inline;
+nav#menu_links li.submenu ul {
+  margin-top: 2px;
+  padding: .5em;
+  border: 1px dotted #666666;
+  display: block;
+  background: #ffffff;
+}
+
+nav#menu_links li.submenu ul > li {
+  display: block;
+  margin-top: .2em;
+}
+
+nav#menu_links > ul, nav#menu_links > ul > li {
+  float: left;
   list-style: none;
   vertical-align: middle;
 }
@@ -421,6 +411,12 @@ nav#user_actions div#username {
 
 nav#user_actions div#username img {
   vertical-align: middle;
+}
+
+nav#user_actions > ul, nav#user_actions > ul > li {
+  display: inline;
+  list-style: none;
+  margin: 0em .5em;
 }
 
 nav.links {
@@ -667,6 +663,10 @@ ul.raw {
 .button:active {
   position: relative;
   top: 1px;
+}
+
+.ui-datepicker-trigger {
+  display: none;
 }
 
 .clear {
